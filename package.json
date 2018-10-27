@@ -1,0 +1,47 @@
+{
+  "name": "gatsby-source-ical",
+  "description": "Gatsby plugin which parses remote icalendar files",
+  "version": "0.0.0-development",
+  "author": "Mark Langovoi <marklangovoi@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/langovoi/gatsby-source-ical/issues"
+  },
+  "homepage": "https://github.com/langovoi/gatsby-source-ical/tree/master/#readme",
+  "repository": "https://github.com/langovoi/gatsby-source-ical",
+  "dependencies": {
+    "@babel/runtime": "^7.1.2",
+    "node-ical": "^0.8.0",
+    "util.promisify": "^1.0.0"
+  },
+  "peerDependencies": {
+    "gatsby": ">2.0.0-alpha"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/plugin-transform-runtime": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "commitizen": "^3.0.4",
+    "cross-env": "^5.2.0",
+    "cz-conventional-changelog": "^2.1.0",
+    "husky": "^1.1.2",
+    "lint-staged": "^7.3.0",
+    "prettier": "^1.14.3",
+    "semantic-release": "^15.10.6",
+    "travis-deploy-once": "^5.0.9"
+  },
+  "keywords": [
+    "gatsby",
+    "gatsby-plugin"
+  ],
+  "scripts": {
+    "build": "babel src --out-dir . --ignore __tests__",
+    "prepare": "cross-env NODE_ENV=production npm run build",
+    "watch": "babel -w src --out-dir . --ignore __tests__",
+    "test": "npm run build",
+    "travis-deploy-once": "travis-deploy-once",
+    "semantic-release": "semantic-release",
+    "commit": "git-cz"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "loose": true,
+        "useBuiltIns": "entry",
+        "shippedProposals": true,
+        "modules": "commonjs",
+        "targets": {
+          "node": 6
+        }
+      }
+    ]
+  ],
+  "plugins": [
+    "@babel/plugin-transform-runtime"
+  ]
+}
