@@ -47,6 +47,8 @@ exports.sourceNodes = async (
 
     const datum = data[id];
 
-    createNode(processDatum(datum, createNodeId, name));
+    if (datum.type === 'VEVENT') {
+      createNode(processDatum(datum, createNodeId, name));
+    }
   }
 };
