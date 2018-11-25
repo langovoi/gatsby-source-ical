@@ -9,6 +9,8 @@ node_js:
   - '9'
   - '8'
   - '6'
+script:
+  - commitlint-travis
 after_success:
   - npm run travis-deploy-once "npm run semantic-release"
 branches:
