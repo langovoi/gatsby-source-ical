@@ -19,6 +19,7 @@ module.exports = {
       options: {
         name: `events`,
         url: `https://web-standards.ru/calendar.ics`,
+        upcomingOnly: false, // set to `true` if you'd like to exclude past events
       },
     },
   ],

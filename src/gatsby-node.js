@@ -34,7 +34,7 @@ function processDatum(datum, createNodeId, sourceInstanceName = "__PROGRAMMATIC_
 
 exports.sourceNodes = async (
   { actions, createNodeId },
-  { url, name }
+  { url, name, upcomingOnly }
 ) => {
   const { createNode } = actions;
 
@@ -47,7 +47,7 @@ exports.sourceNodes = async (
 
     const datum = data[id];
 
-    if (datum.type === 'VEVENT') {
+    if (datum.type === 'VEVENT' && (!upcomingOnly || datum.start > new Date())) {
       createNode(processDatum(datum, createNodeId, name));
     }
   }

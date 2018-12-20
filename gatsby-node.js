@@ -45,7 +45,8 @@ function () {
     createNodeId
   }, {
     url,
-    name
+    name,
+    upcomingOnly
   }) {
     const createNode = actions.createNode;
     const data = yield fromURL(url, {});
@@ -57,7 +58,7 @@ function () {
 
       const datum = data[id];
 
-      if (datum.type === 'VEVENT') {
+      if (datum.type === 'VEVENT' && (!upcomingOnly || datum.start > new Date())) {
         createNode(processDatum(datum, createNodeId, name));
       }
     }
