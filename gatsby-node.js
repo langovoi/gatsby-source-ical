@@ -2,7 +2,9 @@
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+var _asyncToGenerator2 = _interopRequireDefault(
+  require("@babel/runtime/helpers/asyncToGenerator")
+);
 
 require("util.promisify/shim")();
 
@@ -14,9 +16,17 @@ const crypto = require("crypto");
 
 const fromURL = util.promisify(ical.fromURL);
 
-const createContentDigest = obj => crypto.createHash(`md5`).update(JSON.stringify(obj)).digest(`hex`);
+const createContentDigest = obj =>
+  crypto
+    .createHash(`md5`)
+    .update(JSON.stringify(obj))
+    .digest(`hex`);
 
-function processDatum(datum, createNodeId, sourceInstanceName = "__PROGRAMMATIC__") {
+function processDatum(
+  datum,
+  createNodeId,
+  sourceInstanceName = "__PROGRAMMATIC__"
+) {
   return {
     id: createNodeId(datum.uid),
     parent: null,
@@ -28,6 +38,7 @@ function processDatum(datum, createNodeId, sourceInstanceName = "__PROGRAMMATIC_
     summary: datum.summary,
     location: datum.location,
     description: datum.description,
+    rrule: datum.rrule !== undefined ? datum.rrule.toString() : undefined,
     children: [],
     sourceInstanceName,
     internal: {
@@ -38,32 +49,29 @@ function processDatum(datum, createNodeId, sourceInstanceName = "__PROGRAMMATIC_
 }
 
 exports.sourceNodes =
-/*#__PURE__*/
-function () {
-  var _ref = (0, _asyncToGenerator2.default)(function* ({
-    actions,
-    createNodeId
-  }, {
-    url,
-    name
-  }) {
-    const createNode = actions.createNode;
-    const data = yield fromURL(url, {});
+  /*#__PURE__*/
+  (function() {
+    var _ref = (0, _asyncToGenerator2.default)(function*(
+      { actions, createNodeId },
+      { url, name }
+    ) {
+      const createNode = actions.createNode;
+      const data = yield fromURL(url, {});
 
-    for (let id in data) {
-      if (!data.hasOwnProperty(id)) {
-        return;
+      for (let id in data) {
+        if (!data.hasOwnProperty(id)) {
+          return;
+        }
+
+        const datum = data[id];
+
+        if (datum.type === "VEVENT") {
+          createNode(processDatum(datum, createNodeId, name));
+        }
       }
+    });
 
-      const datum = data[id];
-
-      if (datum.type === 'VEVENT') {
-        createNode(processDatum(datum, createNodeId, name));
-      }
-    }
-  });
-
-  return function (_x, _x2) {
-    return _ref.apply(this, arguments);
-  };
-}();
+    return function(_x, _x2) {
+      return _ref.apply(this, arguments);
+    };
+  })();
