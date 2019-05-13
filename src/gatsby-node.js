@@ -11,7 +11,11 @@ const createContentDigest = obj =>
     .update(JSON.stringify(obj))
     .digest(`hex`);
 
-function processDatum(datum, createNodeId, sourceInstanceName = "__PROGRAMMATIC__") {
+function processDatum(
+  datum,
+  createNodeId,
+  sourceInstanceName = "__PROGRAMMATIC__"
+) {
   return {
     id: createNodeId(datum.uid),
     parent: null,
@@ -23,6 +27,7 @@ function processDatum(datum, createNodeId, sourceInstanceName = "__PROGRAMMATIC_
     summary: datum.summary,
     location: datum.location,
     description: datum.description,
+    rrule: datum.rrule !== undefined ? datum.rrule.toString() : undefined,
     children: [],
     sourceInstanceName,
     internal: {
@@ -32,10 +37,7 @@ function processDatum(datum, createNodeId, sourceInstanceName = "__PROGRAMMATIC_
   };
 }
 
-exports.sourceNodes = async (
-  { actions, createNodeId },
-  { url, name }
-) => {
+exports.sourceNodes = async ({ actions, createNodeId }, { url, name }) => {
   const { createNode } = actions;
 
   const data = await fromURL(url, {});
@@ -47,7 +49,7 @@ exports.sourceNodes = async (
 
     const datum = data[id];
 
-    if (datum.type === 'VEVENT') {
+    if (datum.type === "VEVENT") {
       createNode(processDatum(datum, createNodeId, name));
     }
   }
