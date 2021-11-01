@@ -6,25 +6,12 @@ var _asyncToGenerator2 = _interopRequireDefault(
   require("@babel/runtime/helpers/asyncToGenerator")
 );
 
-require("util.promisify/shim")();
-
-const util = require("util");
-
 const ical = require("node-ical");
-
-const crypto = require("crypto");
-
-const fromURL = util.promisify(ical.fromURL);
-
-const createContentDigest = obj =>
-  crypto
-    .createHash(`md5`)
-    .update(JSON.stringify(obj))
-    .digest(`hex`);
 
 function processDatum(
   datum,
   createNodeId,
+  createContentDigest,
   sourceInstanceName = "__PROGRAMMATIC__"
 ) {
   return {
@@ -47,31 +34,34 @@ function processDatum(
     }
   };
 }
+/**
+ * @type {import('gatsby').GatsbyNode['sourceNodes']}
+ */
 
-exports.sourceNodes =
-  /*#__PURE__*/
-  (function() {
-    var _ref = (0, _asyncToGenerator2.default)(function*(
-      { actions, createNodeId },
-      { url, name }
-    ) {
-      const createNode = actions.createNode;
-      const data = yield fromURL(url, {});
+exports.sourceNodes = /*#__PURE__*/ (function() {
+  var _ref = (0, _asyncToGenerator2.default)(function*(
+    { actions, createNodeId, createContentDigest },
+    { url, name }
+  ) {
+    const createNode = actions.createNode;
+    const data = yield ical.async.fromURL(url);
 
-      for (let id in data) {
-        if (!data.hasOwnProperty(id)) {
-          return;
-        }
-
-        const datum = data[id];
-
-        if (datum.type === "VEVENT") {
-          createNode(processDatum(datum, createNodeId, name));
-        }
+    for (let id in data) {
+      if (!data.hasOwnProperty(id)) {
+        return;
       }
-    });
 
-    return function(_x, _x2) {
-      return _ref.apply(this, arguments);
-    };
-  })();
+      const datum = data[id];
+
+      if (datum.type === "VEVENT") {
+        createNode(
+          processDatum(datum, createNodeId, createContentDigest, name)
+        );
+      }
+    }
+  });
+
+  return function(_x, _x2) {
+    return _ref.apply(this, arguments);
+  };
+})();

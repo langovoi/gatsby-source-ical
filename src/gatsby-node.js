@@ -1,19 +1,9 @@
-require("util.promisify/shim")();
-const util = require("util");
 const ical = require("node-ical");
-const crypto = require("crypto");
-
-const fromURL = util.promisify(ical.fromURL);
-
-const createContentDigest = obj =>
-  crypto
-    .createHash(`md5`)
-    .update(JSON.stringify(obj))
-    .digest(`hex`);
 
 function processDatum(
   datum,
   createNodeId,
+  createContentDigest,
   sourceInstanceName = "__PROGRAMMATIC__"
 ) {
   return {
@@ -37,10 +27,16 @@ function processDatum(
   };
 }
 
-exports.sourceNodes = async ({ actions, createNodeId }, { url, name }) => {
+/**
+ * @type {import('gatsby').GatsbyNode['sourceNodes']}
+ */
+exports.sourceNodes = async (
+  { actions, createNodeId, createContentDigest },
+  { url, name }
+) => {
   const { createNode } = actions;
 
-  const data = await fromURL(url, {});
+  const data = await ical.async.fromURL(url);
 
   for (let id in data) {
     if (!data.hasOwnProperty(id)) {
@@ -50,7 +46,7 @@ exports.sourceNodes = async ({ actions, createNodeId }, { url, name }) => {
     const datum = data[id];
 
     if (datum.type === "VEVENT") {
-      createNode(processDatum(datum, createNodeId, name));
+      createNode(processDatum(datum, createNodeId, createContentDigest, name));
     }
   }
 };
